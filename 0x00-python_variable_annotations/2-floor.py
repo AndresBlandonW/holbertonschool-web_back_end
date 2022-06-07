@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Basic annotations - floor"""
+"""Basic annotations floor"""
 import math
 
 
