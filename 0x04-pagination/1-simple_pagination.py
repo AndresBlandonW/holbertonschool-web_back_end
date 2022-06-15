@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-"""Simple helper functionx"""
-from tracemalloc import start
+"""Simple pagination"""
 from typing import Tuple
 import csv
-import math
 from typing import List
 
 
@@ -35,6 +33,7 @@ class Server:
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+        """Get page information a return the index of data"""
         assert type(page) is int and type(page_size) is int
         assert page > 0 and page > 0
 
@@ -47,4 +46,3 @@ class Server:
         data = [self.__dataset[i] for i in range(res[0], res[1])]
 
         return data
-        
