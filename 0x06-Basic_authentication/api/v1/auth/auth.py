@@ -27,7 +27,6 @@ class Auth:
 
         return False
 
-
     def authorization_header(self, request=None) -> str:
         """method authorization header"""
         return request
