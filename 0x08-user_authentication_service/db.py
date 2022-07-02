@@ -39,3 +39,9 @@ class DB:
         session.commit()
 
         return ed_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """find user by argument"""
+        session = self._session
+
+        return session.query(User).filter_by(**kwargs).one()
