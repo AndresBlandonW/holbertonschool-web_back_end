@@ -2,7 +2,6 @@
 """Basic Flask app"""
 from urllib import response
 from flask import Flask, abort, jsonify, request
-import flask
 from auth import Auth
 
 app = Flask(__name__)
@@ -38,9 +37,9 @@ def login():
         abort(401)
     else:
         session_id = AUTH.create_session(email)
-        res = flask.make_response()
-        res.set_cookie('session_id', session_id)
-        return jsonify({"email": email, "message": "logged in"})
+        resp = jsonify({"email": email, "message": "logged in"})
+        resp.set_cookie('session_id', session_id)
+        return resp
 
 
 if __name__ == "__main__":
