@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """auth module"""
-import uuid
+from uuid import uuid4
 import bcrypt
 from db import DB
 from sqlalchemy.orm.exc import NoResultFound
@@ -10,6 +10,9 @@ from user import User
 
 def _hash_password(password: str) -> str:
     """hash password method return bytes"""
+    if password is None or type(password) is not str:
+        return None
+
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(bytes(password, 'utf-8'), salt)
     return hashed
@@ -17,7 +20,7 @@ def _hash_password(password: str) -> str:
 
 def _generate_uuid() -> str:
     """generate a uuid"""
-    return str(uuid.uuid4())
+    return str(uuid4())
 
 
 class Auth:
@@ -62,13 +65,12 @@ class Auth:
 
     def get_user_from_session_id(self, session_id: str) -> str:
         """get user from session id method"""
-        if session_id is None:
+        if session_id is None or type(session_id) is not str:
             return None
 
         try:
             user = self._db.find_user_by(session_id=session_id)
-            if user is not None:
-                return user
+            return user
         except NoResultFound:
             return None
 
@@ -79,14 +81,15 @@ class Auth:
 
     def get_reset_password_token(self, email) -> str:
         """Generate reset password token"""
+        if email is None or type(email) is not str:
+            raise ValueError
+
         try:
             user = self._db.find_user_by(email=email)
             if user is not None:
                 token = _generate_uuid()
                 self._db.update_user(user.id, reset_token=token)
                 return token
-            else:
-                raise ValueError()
         except NoResultFound:
             raise ValueError()
 
@@ -95,10 +98,9 @@ class Auth:
         if type(reset_token) is str and type(password) is str:
             try:
                 user = self._db.find_user_by(reset_token=reset_token)
-                if user is not None:
-                    hashed_pass = _hash_password(password)
-                    self._db.update_user(user.id, hashed_password=hashed_pass,
-                                         reset_token=None)
+                hashed_password = _hash_password(password)
+                self._db.update_user(user.id, hashed_password=hashed_password,
+                                     reset_token=None)
             except NoResultFound:
                 raise ValueError
 
