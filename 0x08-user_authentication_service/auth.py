@@ -30,3 +30,15 @@ class Auth:
         except NoResultFound:
             hashed_pass = _hash_password(password)
             return self._db.add_user(email, hashed_pass)
+
+    def valid_login(self, email: str, password: str) -> bool:
+        """valid the login user"""
+        try:
+            user_exists = self._db.find_user_by(email=email)
+            if user_exists is not None:
+                hsd = user_exists.hashed_password
+                if bcrypt.checkpw(password.encode('utf8'), hsd):
+                    return True
+            return False
+        except NoResultFound:
+            return False
